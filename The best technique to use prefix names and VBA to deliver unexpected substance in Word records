@@ -1,0 +1,177 @@
+A huge amount of perusers ask for procedures that show unexpected substance. Fortunately, there are various ways to deal with do all things considered, and all through an accompanying couple of months, we'll study several them. In this article, I begin this examination with a standout amongst the most direct courses of action—a bit of VBA code that knows when to conceal, and when not to cover, a section, in light of a game plan of conspicuous confirmation prefixes in the source document. As a matter of fact, you'll make sense of how to use VBA's Hidden property to cover entries. This framework is gainful when you require a couple of files that offer both typical and prohibitive substance. You can create a couple of particular records while keeping up only a solitary source document. 
+
+Setup 
+
+The primary concern you require is a source record with unforeseen substance, similar to the indicating archive. This record records scrounger pursue a request for understudies in kindergarten through sixth grade. We will presumably use the same (source) record for understudies in two age social affairs: kindergarten through second grade and third through sixth grade. The finished thing will empower us to demonstrate whether the resulting document indicates a request for the more energetic social affair or the more settled assembling. 
+
+At first look, you may think why inconvenience? The show record is fundamental deliberately; imagine realizing this methodology with an impressively more unpredictable document and you'll quickly watch its regard. The goal is to change and manage one source record instead of a couple while keeping up the ability to deliver a couple of chronicles from a comparable source report. 
+
+The <> prefix tag toward the beginning of every request recognizes each social affair: <1> addresses the more energetic children and <2> addresses the more prepared understudies. You could segment your information into more than two social occasions; I'm using two to keep the outline fundamental, any way you could incorporate the third assembling for focus school, a fourth for optional school, and so forth. 
+
+Since the VBA depends upon the <> pictures to mean the condition, prefix only those areas you require evaluated prohibitively. In like manner, the code evaluates entries as implied by the area stamp or hard return. Figuratively speaking, the code scans for the substance between the tag and the main hard return it encounters. Using the unmistakable verification a motivating force inside the tag, the code picks whether to disguise the substance or not. 
+
+When you have your source record, you're set up to incorporate the code that empowers a customer to figure out which request to appear. Before including that code, you'll have to finish two things on the off chance that you're using the Ribbon type of Word: Save the file as a huge scale enabled to record and demonstrate the Developer tab. 
+
+Save the record 
+
+On the off chance that you're using a menu adjustment of Word, you can skirt this zone and the accompanying. Ribbon frame customers must extra the chronicle as a huge scale enabled report as takes after: 
+
+1. Tap the File tab. 
+
+2. In the left sheet, pick Save As. 
+
+3 .Enter a name for the archive. 
+
+4. Pick Word Macro-Enabled Document (*.docm). 
+
+5. Snap Save. 
+
+Demonstrate the Developer tab 
+
+You'll use choices on the Developer tab to enter and run the code. In case this tab isn't observable, indicate it as takes after: 
+
+1. From the Quick Access Toolbar drop-down, select More Commands. Or then again tap the File tab, pick Options, and a short time later pick Customize Ribbon. 
+
+2. In the Main Tabs list (to the other side), check the Developer elective. 
+
+3. Snap OK to return to your chronicle. 
+
+Incorporate the code 
+
+Directly you're set up to incorporate the code that makes sense of which request to conceal. To enter the code in Listing A, tick the Developer tab and after that snap Visual Basic in the Code social occasion to open the Visual Basic Editor (VBE). 
+
+Posting A 
+
+Sub ProcessHide() 
+
+'Disguise request according to age gathering. 
+
+'<1> addresses request fork through second grade. 
+
+'<2> addresses request for third through sixth grade. 
+
+Lessen ToShow As Integer 
+
+Lessen myPara As Paragraph 
+
+Lessen myRange As Range 
+
+Lessen doc As Document 
+
+Set myRange = Range 
+
+Set doc = ActiveDocument 
+
+'Engage botch dealing with routine. 
+
+On Error GoTo ErrorHandler 
+
+'Show all in advance covered message before beginning. 
+
+'There shouldn't be any; extra as a prudent step if someone saves the first while questions are concealed. 
+
+doc.Range.Font.Hidden = False 
+
+'Approach customer for age social occasion to appear; the data regarding must be 1 or 2. 
+
+'You can use an If rather: If ToShow > 2 or ToShow < 1 Then... 
+
+'- - Add more classes here.  
+
+Select Case ToShow 
+
+Case Is = 1 'Do Nothing 
+
+Case Is = 2 'Do Nothing 
+
+Case Is > 2  
+
+Case Is < 1
+
+Case Else 'Find everything else 
+
+'Appropriate response code. 
+
+End Select 
+
+'Choose whether current request matches appear or cover gathering. 
+
+'First, check for mark character < and ignore any segments that don't begin with this character. 
+
+'In case of data regard and name regard facilitate, disguise the first tag. 
+
+Each myPara In doc.Paragraphs 
+
+If InStr(1, myPara, "<") Then 
+
+If ToShow = myPara.Range.Characters(2) Then 
+
+myRange.SetRange start:=myPara.Range.start, End:=myPara.Range.start + 3 
+
+myRange.Font.Hidden = True 
+
+End If 
+
+Next 
+
+'If data regard and mark regard don't organize, hide myPara. 
+
+Each myPara In doc.Paragraphs 
+
+If InStr(1, myPara, "<") Then 
+
+If ToShow <> myPara.Range.Characters(2) Then myPara.Range.Font.Hidden = True 
+
+End If 
+
+Next 
+
+Leave Sub 
+
+ErrorHandler: 
+
+Select Case Err.Number 
+
+Case Is = 13 
+
+MsgBox "Please enter the regard 1 or 2.", vbOKOnly, "Misstep" 
+
+Leave Sub 
+
+Case Else 
+
+MsgBox Err.Description 
+
+doc.Range.Font.Hidden = False 
+
+Leave Sub 
+
+End Select 
+
+End Sub 
+
+In the Projects Explorer, pick This Document and enter the code. If you have in an overabundance of single word document open, be careful in order to pick the right record. 
+
+NOTE: Don't endeavor to copy the VBA code from this site page in light of the way that the VBE will fuss about exceptional web characters. Or maybe, use the downloadable show files.\Make without question botch dealing with is set precisely by picking Options from the Tools menu. Next, tap the General tab, select Break On Unhandled Errors in the Error Trapping fragment, and snap OK. 
+
+Save your work and return to your Word answer to run the full scale. Tap the Developer tab and a short time later snap Macros in the Code gathering. In the resulting talk, pick ProcessHide. 
+
+Right when the full scale demonstrates the data box, enter the regard 1. Doing all things considered will hide the request prefixed with the <2> tag and cover the <1> names for whatever is left of the request. If you enter 2, the full scale will hide questions prefixed with <1> and cover the <2> marks. Toward the day's end, enter the regard that addresses the age assemble you have to appear. Indeed, this the same old thing could be all the more straightforward. Your customers ought to perceive what the characteristics 1 and 2 address. I settled on straightforwardness so we could revolve around the technique and not specialization. 
+
+Furthermore, observe that the huge scale didn't cover the sentence without a <> prefix. The code slights any section that doesn't begin with the < character. Directly, we should examine the code so you can change it for your records. 
+
+An underlying couple of lines announce and describe two or three components, engage botch managing, and unhide any request that may have been as of now concealed. This could happen if a customer saves the report in the wake of running the vast scale. Set up your customers not to do that—fairly, run the substantial scale, print out the amount of scrounger pursues required, and exit without saving. Or then again run the full scale and rename the record, so as not to overwrite the source file. 
+
+The InputBox() work prompts the customer for a regard, and the Select Case controls the data motivator to be a 1 or a 2. In case you incorporate more conditions (more age get-togethers), make a point to revive the Select Case in like way. The underlying two Case Is announcements aren't required, yet I added them to be extensive; you should need to achieve something to some degree exceptional while applying this technique to your own reports. 
+
+The For Each square twists through every entry in the record. For this circumstance, every request is a segment in light of the fact that every request is taken after with an entry stamp (hard return). If the essential character in the present area (myPara) is the < character, the If square takes a gander at the customer's data regard (ToShow) to the second character in the section—the characteristics 1 and 2 in the prefix marks. If those two characteristics are the same, the code covers the prefix tag yet not the request. 
+
+The accompanying For Each square works likewise yet looks for a perplex between the ToShow variable and the prefix regard. When they don't arrange, the code covers the entire area—the prefix and the request. 
+
+By using the unexpected substance, you require to revive only a solitary report when you need to take off changes to the source questions. For instance, you may have requested in both age groups that suggest the bullfrog appear. In case you dispose of the show, you can open the source record and eradicate each related request in simply the source chronicle. 
+
+In case you have a couple of particular records for different characterizations, you can see the regard—reviving one source or pro report is more capable than invigorating a couple of subdocuments. You'll more than likely use this in records that contain both typical and prohibitive substance. 
+
+More customization 
+
+This case is essential deliberately so we can revolve around the code and how it capacities. You can incorporate more conditions (age social events) by including mark prefixes, for instance, <3>, <4>, and so on. Essentially change the fundamental Select Case to recognize the new characteristics. You don't need to change whatever else. You could even add a reaction to every request and disguise them from understudies yet demonstrate them for instructors, anyway this article excludes that course of action. You ought to genuinely think about running the vast scale as an AutoExec full scale. Doing in that capacity perplexes bolster, yet it will be impressively more clear for your customers.
